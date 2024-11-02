@@ -10,6 +10,24 @@ import {
   Alert,
 } from 'react-native';
 import axios from 'axios';
+import Sound from 'react-native-sound';
+
+// sounds
+const userMessageSound = new Sound(
+  'user-message.mp3',
+  Sound.MAIN_BUNDLE,
+  error => {
+    if (error) {
+      console.log('Failed to load sound', error);
+    }
+  },
+);
+
+const botReplySound = new Sound('bot-reply.mp3', Sound.MAIN_BUNDLE, error => {
+  if (error) {
+    console.log('Failed to load sound', error);
+  }
+});
 
 interface Message {
   id: string;
@@ -59,6 +77,8 @@ const ChatScreen: React.FC = () => {
       return;
     }
 
+    userMessageSound.play();
+
     // Adding user message to chat
     const userMessage: Message = {
       id: `${new Date().getTime()}`,
@@ -81,6 +101,8 @@ const ChatScreen: React.FC = () => {
         sender: 'bot',
         createdAt: new Date(),
       };
+
+      botReplySound.play();
 
       setMessages(prevMessages => [botMessage, ...prevMessages]);
     } catch (error) {
